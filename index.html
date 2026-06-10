@@ -497,6 +497,8 @@
     /* Gallery marquee */
     .gallery-marquee {
       overflow: hidden;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
       mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
       -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
     }
@@ -504,9 +506,9 @@
     .marquee-track {
       display: flex;
       width: max-content;
-      will-change: transform;
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
+      -webkit-transform: translate3d(0, 0, 0);
       transform: translate3d(0, 0, 0);
     }
 
@@ -547,6 +549,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
 
     .gallery-tag {
@@ -1048,7 +1051,7 @@
         transform: none !important;
       }
       .marquee-group { flex-wrap: wrap; padding-right: 0; }
-      .marquee-group:last-child { display: none; }
+      .marquee-group + .marquee-group { display: none; }
       .gallery-item { flex: 0 0 45%; margin-bottom: 12px; }
 
       .hero { background: #2563eb !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
@@ -1548,7 +1551,7 @@
 
       goTo(0);
 
-      /* Gallery marquee — JS 无缝滚动，避免 CSS 动画在部分手机上循环后出现空白 */
+      /* Gallery marquee — 兼容微信内置浏览器（X5 / WKWebView） */
       (function initMarquee() {
         var track = document.querySelector('.marquee-track');
         if (!track) return;
@@ -1557,30 +1560,45 @@
         var source = track.querySelector('.marquee-group');
         if (!source) return;
 
+        var isWeChat = /MicroMessenger/i.test(navigator.userAgent);
+
         track.querySelectorAll('.marquee-group').forEach(function (group, index) {
           if (index > 0) group.remove();
         });
         track.appendChild(source.cloneNode(true));
+        track.appendChild(source.cloneNode(true));
 
-        track.querySelectorAll('img').forEach(function (img) {
-          img.loading = 'eager';
-          img.decoding = 'async';
-        });
+        function refreshImages(root) {
+          root.querySelectorAll('img').forEach(function (img) {
+            img.loading = 'eager';
+            img.decoding = 'sync';
+            var src = img.getAttribute('src');
+            if (src) img.src = src;
+          });
+        }
+        refreshImages(track);
 
         var offset = 0;
         var groupWidth = 0;
         var loopMs = 36000;
+        var tickMs = isWeChat ? 33 : 16;
         var paused = false;
-        var visible = true;
-        var rafId = null;
-        var lastTime = 0;
+        var timerId = null;
         var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+        function applyTransform() {
+          var x = (-offset).toFixed(2);
+          var val = 'translate3d(' + x + 'px,0,0)';
+          track.style.webkitTransform = val;
+          track.style.transform = val;
+        }
+
         function measure() {
-          var clone = track.querySelector('.marquee-group + .marquee-group');
-          groupWidth = clone ? clone.offsetLeft : source.getBoundingClientRect().width;
+          var second = track.querySelector('.marquee-group + .marquee-group');
+          groupWidth = second ? second.offsetLeft : source.getBoundingClientRect().width;
           if (groupWidth > 0 && offset >= groupWidth) {
             offset = offset % groupWidth;
+            applyTransform();
           }
         }
 
@@ -1588,7 +1606,7 @@
           var imgs = track.querySelectorAll('img');
           var pending = 0;
           imgs.forEach(function (img) {
-            if (img.complete) return;
+            if (img.complete && img.naturalWidth > 0) return;
             pending++;
             var finish = function () {
               pending--;
@@ -1600,83 +1618,72 @@
           if (pending === 0) done();
         }
 
-        function tick(now) {
-          rafId = requestAnimationFrame(tick);
-          if (!visible || paused || reduceMotion || !groupWidth) return;
-
-          if (!lastTime) lastTime = now;
-          var delta = Math.min(now - lastTime, 50);
-          lastTime = now;
-
-          offset += (groupWidth / loopMs) * delta;
-          while (offset >= groupWidth) offset -= groupWidth;
-
-          track.style.transform = 'translate3d(' + (-offset) + 'px,0,0)';
+        function tick() {
+          if (document.hidden || paused || reduceMotion || !groupWidth) return;
+          offset += (groupWidth / loopMs) * tickMs;
+          if (offset >= groupWidth) offset -= groupWidth;
+          applyTransform();
         }
 
         function start() {
-          if (rafId == null) {
-            lastTime = 0;
-            rafId = requestAnimationFrame(tick);
-          }
+          if (timerId != null) return;
+          timerId = setInterval(tick, tickMs);
         }
 
         function stop() {
-          if (rafId != null) {
-            cancelAnimationFrame(rafId);
-            rafId = null;
-            lastTime = 0;
+          if (timerId != null) {
+            clearInterval(timerId);
+            timerId = null;
           }
         }
 
-        function setup() {
+        function restart() {
+          stop();
           measure();
           if (groupWidth > 0) start();
         }
 
         var resizeTimer;
-        function scheduleSetup() {
+        function scheduleRestart() {
           clearTimeout(resizeTimer);
-          resizeTimer = setTimeout(setup, 150);
+          resizeTimer = setTimeout(restart, isWeChat ? 300 : 150);
         }
 
-        if (marquee) {
+        if (marquee && !isWeChat) {
           marquee.addEventListener('mouseenter', function () { paused = true; });
-          marquee.addEventListener('mouseleave', function () { paused = false; lastTime = 0; });
-          marquee.addEventListener('touchstart', function () { paused = true; }, { passive: true });
-          marquee.addEventListener('touchend', function () { paused = false; lastTime = 0; }, { passive: true });
-          marquee.addEventListener('touchcancel', function () { paused = false; lastTime = 0; }, { passive: true });
+          marquee.addEventListener('mouseleave', function () { paused = false; });
         }
 
         document.addEventListener('visibilitychange', function () {
           if (document.hidden) {
             stop();
-          } else if (visible) {
-            setup();
+          } else {
+            scheduleRestart();
           }
         });
 
-        if (marquee && 'IntersectionObserver' in window) {
-          var observer = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-              visible = entry.isIntersecting;
-              if (visible) scheduleSetup();
-              else stop();
-            });
-          }, { threshold: 0, rootMargin: '80px' });
-          observer.observe(marquee);
-        }
+        window.addEventListener('pageshow', function (e) {
+          offset = 0;
+          applyTransform();
+          scheduleRestart();
+        });
 
-        window.addEventListener('resize', scheduleSetup);
-        window.addEventListener('orientationchange', scheduleSetup);
+        window.addEventListener('resize', scheduleRestart);
+        window.addEventListener('orientationchange', scheduleRestart);
+
+        if (isWeChat) {
+          document.addEventListener('WeixinJSBridgeReady', scheduleRestart, false);
+          setTimeout(scheduleRestart, 800);
+          setTimeout(scheduleRestart, 2000);
+        }
 
         waitForAssets(function () {
           var fontsReady = document.fonts && document.fonts.ready
             ? document.fonts.ready
             : Promise.resolve();
           fontsReady.then(function () {
-            scheduleSetup();
-            setTimeout(scheduleSetup, 300);
+            scheduleRestart();
+            setTimeout(scheduleRestart, isWeChat ? 500 : 200);
           });
         });
       })();
