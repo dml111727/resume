@@ -507,28 +507,17 @@
       will-change: transform;
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
-      animation: marqueeScroll var(--marquee-duration, 36s) linear infinite;
-      animation-play-state: paused;
-    }
-
-    .marquee-track.is-ready {
-      animation-play-state: running;
-    }
-
-    .gallery-marquee:hover .marquee-track.is-ready {
-      animation-play-state: paused;
-    }
-
-    @keyframes marqueeScroll {
-      from { transform: translate3d(0, 0, 0); }
-      to { transform: translate3d(calc(-1 * var(--marquee-distance, 50%)), 0, 0); }
+      transform: translate3d(0, 0, 0);
     }
 
     .marquee-group {
       display: flex;
       flex-shrink: 0;
       gap: 16px;
-      padding-right: 16px;
+    }
+
+    .marquee-group + .marquee-group {
+      padding-left: 16px;
     }
 
     .gallery-item {
@@ -1278,7 +1267,7 @@
                    data-src="assets/gallery/cert-designer.jpg" data-caption="软件设计师（中级）证书">
                 <div class="gallery-thumb">
                   <span class="gallery-tag">证书</span>
-                  <img src="assets/gallery/cert-designer.jpg" alt="软件设计师证书" loading="lazy">
+                  <img src="assets/gallery/cert-designer.jpg" alt="软件设计师证书" loading="eager" decoding="async">
                   <div class="gallery-overlay"><span class="gallery-view">查看</span></div>
                 </div>
                 <div class="gallery-info">
@@ -1291,7 +1280,7 @@
                    data-src="assets/gallery/honor-excellent.jpg" data-caption="2021 年度技能评估优秀奖">
                 <div class="gallery-thumb">
                   <span class="gallery-tag">荣誉</span>
-                  <img src="assets/gallery/honor-excellent.jpg" alt="技能评估优秀奖" loading="lazy">
+                  <img src="assets/gallery/honor-excellent.jpg" alt="技能评估优秀奖" loading="eager" decoding="async">
                   <div class="gallery-overlay"><span class="gallery-view">查看</span></div>
                 </div>
                 <div class="gallery-info">
@@ -1304,7 +1293,7 @@
                    data-src="assets/gallery/ScreenShot_2026-06-10_161808_468.png" data-caption="在校证书">
                 <div class="gallery-thumb">
                   <span class="gallery-tag">荣誉</span>
-                  <img src="assets/gallery/ScreenShot_2026-06-10_161808_468.png" alt="国家励志奖学金（3次）" loading="lazy">
+                  <img src="assets/gallery/ScreenShot_2026-06-10_161808_468.png" alt="国家励志奖学金（3次）" loading="eager" decoding="async">
                   <div class="gallery-overlay"><span class="gallery-view">查看</span></div>
                 </div>
                 <div class="gallery-info">
@@ -1318,63 +1307,7 @@
                    data-caption="Vibe Coding · Cursor应用案例">
                 <div class="gallery-thumb">
                   <span class="gallery-tag">作品演示</span>
-                  <img src="assets/gallery/微信图片_20260610162503_81_141.png" alt="Dify 演示" loading="lazy">
-                  <div class="play-overlay"><span class="play-btn">▶</span></div>
-                  <div class="gallery-overlay"><span class="gallery-view">播放演示</span></div>
-                </div>
-                <div class="gallery-info">
-                  <h4>Vibe Coding</h4>
-                  <p>Cursor应用案例</p>
-                </div>
-              </div>
-            </div>
-			
-			 <div class="marquee-group">
-              <div class="gallery-item" data-type="image"
-                   data-src="assets/gallery/cert-designer.jpg" data-caption="软件设计师（中级）证书">
-                <div class="gallery-thumb">
-                  <span class="gallery-tag">证书</span>
-                  <img src="assets/gallery/cert-designer.jpg" alt="软件设计师证书" loading="lazy">
-                  <div class="gallery-overlay"><span class="gallery-view">查看</span></div>
-                </div>
-                <div class="gallery-info">
-                  <h4>软件设计师（中级）</h4>
-                  <p>计算机技术与软件专业技术资格</p>
-                </div>
-              </div>
-
-              <div class="gallery-item" data-type="image"
-                   data-src="assets/gallery/honor-excellent.jpg" data-caption="2021 年度技能评估优秀奖">
-                <div class="gallery-thumb">
-                  <span class="gallery-tag">荣誉</span>
-                  <img src="assets/gallery/honor-excellent.jpg" alt="技能评估优秀奖" loading="lazy">
-                  <div class="gallery-overlay"><span class="gallery-view">查看</span></div>
-                </div>
-                <div class="gallery-info">
-                  <h4>技能评估优秀奖</h4>
-                  <p>2021 年度 · 公司内部表彰</p>
-                </div>
-              </div>
-
-              <div class="gallery-item" data-type="image"
-                   data-src="assets/gallery/ScreenShot_2026-06-10_161808_468.png" data-caption="在校证书">
-                <div class="gallery-thumb">
-                  <span class="gallery-tag">荣誉</span>
-                  <img src="assets/gallery/ScreenShot_2026-06-10_161808_468.png" alt="国家励志奖学金（3次）" loading="lazy">
-                  <div class="gallery-overlay"><span class="gallery-view">查看</span></div>
-                </div>
-                <div class="gallery-info">
-                  <h4>国家励志奖学金（3次）</h4>
-                  <p>在校证书</p>
-                </div>
-              </div>
-
-              <div class="gallery-item" data-type="video"
-                   data-src="assets/gallery/project-dify.svg" data-video="assets/gallery/cursor.mp4"
-                   data-caption="Vibe Coding · Cursor应用案例">
-                <div class="gallery-thumb">
-                  <span class="gallery-tag">作品演示</span>
-                  <img src="assets/gallery/微信图片_20260610162503_81_141.png" alt="Dify 演示" loading="lazy">
+                  <img src="assets/gallery/微信图片_20260610162503_81_141.png" alt="Dify 演示" loading="eager" decoding="async">
                   <div class="play-overlay"><span class="play-btn">▶</span></div>
                   <div class="gallery-overlay"><span class="gallery-view">播放演示</span></div>
                 </div>
@@ -1615,78 +1548,144 @@
 
       goTo(0);
 
-      /* Gallery marquee — 按首组实际宽度滚动，图片加载后再启动，避免手机端播完停住 */
+      /* Gallery marquee — JS 无缝滚动，避免 CSS 动画在部分手机上循环后出现空白 */
       (function initMarquee() {
         var track = document.querySelector('.marquee-track');
         if (!track) return;
 
         var marquee = track.closest('.gallery-marquee');
-        var groups = track.querySelectorAll('.marquee-group');
-        if (groups.length < 2 && groups[0]) {
-          track.appendChild(groups[0].cloneNode(true));
-          groups = track.querySelectorAll('.marquee-group');
+        var source = track.querySelector('.marquee-group');
+        if (!source) return;
+
+        track.querySelectorAll('.marquee-group').forEach(function (group, index) {
+          if (index > 0) group.remove();
+        });
+        track.appendChild(source.cloneNode(true));
+
+        track.querySelectorAll('img').forEach(function (img) {
+          img.loading = 'eager';
+          img.decoding = 'async';
+        });
+
+        var offset = 0;
+        var groupWidth = 0;
+        var loopMs = 36000;
+        var paused = false;
+        var visible = true;
+        var rafId = null;
+        var lastTime = 0;
+        var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function measure() {
+          var clone = track.querySelector('.marquee-group + .marquee-group');
+          groupWidth = clone ? clone.offsetLeft : source.getBoundingClientRect().width;
+          if (groupWidth > 0 && offset >= groupWidth) {
+            offset = offset % groupWidth;
+          }
+        }
+
+        function waitForAssets(done) {
+          var imgs = track.querySelectorAll('img');
+          var pending = 0;
+          imgs.forEach(function (img) {
+            if (img.complete) return;
+            pending++;
+            var finish = function () {
+              pending--;
+              if (pending <= 0) done();
+            };
+            img.addEventListener('load', finish, { once: true });
+            img.addEventListener('error', finish, { once: true });
+          });
+          if (pending === 0) done();
+        }
+
+        function tick(now) {
+          rafId = requestAnimationFrame(tick);
+          if (!visible || paused || reduceMotion || !groupWidth) return;
+
+          if (!lastTime) lastTime = now;
+          var delta = Math.min(now - lastTime, 50);
+          lastTime = now;
+
+          offset += (groupWidth / loopMs) * delta;
+          while (offset >= groupWidth) offset -= groupWidth;
+
+          track.style.transform = 'translate3d(' + (-offset) + 'px,0,0)';
+        }
+
+        function start() {
+          if (rafId == null) {
+            lastTime = 0;
+            rafId = requestAnimationFrame(tick);
+          }
+        }
+
+        function stop() {
+          if (rafId != null) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+            lastTime = 0;
+          }
+        }
+
+        function setup() {
+          measure();
+          if (groupWidth > 0) start();
         }
 
         var resizeTimer;
-        function measureAndRun() {
-          var first = track.querySelector('.marquee-group');
-          if (!first) return;
-          var distance = first.offsetWidth;
-          if (distance <= 0) return;
-
-          track.style.setProperty('--marquee-distance', distance + 'px');
-          track.style.setProperty('--marquee-duration', Math.max(24, distance / 28) + 's');
-
-          track.classList.remove('is-ready');
-          void track.offsetWidth;
-          track.classList.add('is-ready');
-        }
-
-        function scheduleMeasure() {
+        function scheduleSetup() {
           clearTimeout(resizeTimer);
-          resizeTimer = setTimeout(measureAndRun, 120);
+          resizeTimer = setTimeout(setup, 150);
         }
 
-        var imgs = track.querySelectorAll('img');
-        var pending = 0;
-        imgs.forEach(function (img) {
-          if (img.complete) return;
-          pending++;
-          img.addEventListener('load', function () {
-            pending--;
-            if (pending <= 0) scheduleMeasure();
-          });
-          img.addEventListener('error', function () {
-            pending--;
-            if (pending <= 0) scheduleMeasure();
-          });
+        if (marquee) {
+          marquee.addEventListener('mouseenter', function () { paused = true; });
+          marquee.addEventListener('mouseleave', function () { paused = false; lastTime = 0; });
+          marquee.addEventListener('touchstart', function () { paused = true; }, { passive: true });
+          marquee.addEventListener('touchend', function () { paused = false; lastTime = 0; }, { passive: true });
+          marquee.addEventListener('touchcancel', function () { paused = false; lastTime = 0; }, { passive: true });
+        }
+
+        document.addEventListener('visibilitychange', function () {
+          if (document.hidden) {
+            stop();
+          } else if (visible) {
+            setup();
+          }
         });
 
-        if (document.fonts && document.fonts.ready) {
-          document.fonts.ready.then(scheduleMeasure);
-        }
-
-        window.addEventListener('resize', scheduleMeasure);
-        window.addEventListener('orientationchange', scheduleMeasure);
-
         if (marquee && 'IntersectionObserver' in window) {
-          var marqueeObserver = new IntersectionObserver(function (entries) {
+          var observer = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
-              if (entry.isIntersecting) scheduleMeasure();
+              visible = entry.isIntersecting;
+              if (visible) scheduleSetup();
+              else stop();
             });
-          }, { threshold: 0.1 });
-          marqueeObserver.observe(marquee);
+          }, { threshold: 0, rootMargin: '80px' });
+          observer.observe(marquee);
         }
 
-        scheduleMeasure();
-        setTimeout(scheduleMeasure, 600);
+        window.addEventListener('resize', scheduleSetup);
+        window.addEventListener('orientationchange', scheduleSetup);
+
+        waitForAssets(function () {
+          var fontsReady = document.fonts && document.fonts.ready
+            ? document.fonts.ready
+            : Promise.resolve();
+          fontsReady.then(function () {
+            scheduleSetup();
+            setTimeout(scheduleSetup, 300);
+          });
+        });
       })();
 
       /* Lightbox */
       var lightbox = document.getElementById('lightbox');
       var lightboxMedia = document.getElementById('lightboxMedia');
       var lightboxCaption = document.getElementById('lightboxCaption');
-      var galleryItems = document.querySelectorAll('.gallery-item');
+      var galleryMarquee = document.querySelector('.gallery-marquee');
 
       function openLightbox(type, src, caption, videoSrc) {
         lightboxMedia.innerHTML = '';
@@ -1718,8 +1717,10 @@
         document.body.style.overflow = '';
       }
 
-      galleryItems.forEach(function (item) {
-        item.addEventListener('click', function () {
+      if (galleryMarquee) {
+        galleryMarquee.addEventListener('click', function (e) {
+          var item = e.target.closest('.gallery-item');
+          if (!item) return;
           openLightbox(
             item.getAttribute('data-type'),
             item.getAttribute('data-src'),
@@ -1727,7 +1728,7 @@
             item.getAttribute('data-video')
           );
         });
-      });
+      }
 
       document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
       lightbox.addEventListener('click', function (e) { if (e.target === lightbox) closeLightbox(); });
