@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" fill="none">
+  <rect width="640" height="480" fill="#f0fdf4"/>
+  <rect x="60" y="60" width="520" height="360" rx="12" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+  <rect x="120" y="100" width="400" height="48" rx="8" fill="#dcfce7"/>
+  <text x="320" y="134" text-anchor="middle" fill="#15803d" font-family="sans-serif" font-size="22" font-weight="700">ÞÀ¶</text>
+  <text x="320" y="220" text-anchor="middle" fill="#166534" font-family="sans-serif" font-size="32" font-weight="700">2024 · 2025</text>
+  <text x="320" y="280" text-anchor="middle" fill="#4ade80" font-family="sans-serif" font-size="18">t¦¤Á</text>
+  <text x="320" y="360" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-size="15">c‰gG`M · ÿb: assets/gallery/honor-expert.jpg</text>
+</svg>
