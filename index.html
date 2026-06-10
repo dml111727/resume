@@ -522,29 +522,38 @@
     }
 
     .marquee-viewport {
-      overflow-x: scroll;
-      overflow-y: hidden;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      overscroll-behavior-x: contain;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .marquee-viewport::-webkit-scrollbar {
-      display: none;
-      width: 0;
-      height: 0;
+      overflow: hidden;
     }
 
     .marquee-track {
       display: flex;
       flex-wrap: nowrap;
-      gap: 16px;
       width: max-content;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      animation: marqueeLoop 38s linear infinite;
+      animation-play-state: paused;
     }
 
+    .marquee-track.is-ready {
+      animation-play-state: running;
+    }
+
+    .gallery-marquee:hover .marquee-track.is-ready {
+      animation-play-state: paused;
+    }
+
+    @keyframes marqueeLoop {
+      from { -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
+      to { -webkit-transform: translate3d(-50%, 0, 0); transform: translate3d(-50%, 0, 0); }
+    }
+
+    .marquee-segment,
     .marquee-group {
-      display: contents;
+      display: flex;
+      flex-shrink: 0;
+      gap: 16px;
+      padding-right: 16px;
     }
 
     .gallery-item {
@@ -1075,12 +1084,13 @@
 
       .marquee-viewport { overflow: visible; }
       .marquee-track {
+        animation: none !important;
         flex-wrap: wrap;
         width: 100%;
         transform: none !important;
       }
-      .marquee-group { display: block; }
-      .gallery-item[data-marquee-clone] { display: none; }
+      .marquee-segment + .marquee-segment,
+      .marquee-group + .marquee-group { display: none; }
       .gallery-item { flex: 0 0 45%; width: auto; min-width: 0; margin-bottom: 12px; }
 
       .hero { background: #2563eb !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
@@ -1295,7 +1305,7 @@
         <div class="gallery-marquee">
           <div class="marquee-viewport">
             <div class="marquee-track">
-              <div class="marquee-group">
+              <div class="marquee-segment">
               <div class="gallery-item" data-type="image"
                    data-src="assets/gallery/cert-designer.jpg" data-caption="软件设计师（中级）证书">
                 <div class="gallery-thumb">
@@ -1351,6 +1361,7 @@
               </div>
             </div>
           </div>
+        </div>
         </div>
       </section>
 
@@ -1581,94 +1592,30 @@
 
       goTo(0);
 
-      /* Gallery marquee — iOS / 微信：scrollLeft 无缝循环，避免 transform + mask 渲染空白 */
+      /* Gallery marquee — 双段 -50% 动画，两段等宽无缝衔接，无空白间隙 */
       (function initMarquee() {
-        var viewport = document.querySelector('.marquee-viewport');
         var track = document.querySelector('.marquee-track');
-        if (!viewport || !track) return;
+        if (!track) return;
 
-        var marquee = viewport.closest('.gallery-marquee');
-        var group = track.querySelector('.marquee-group');
-        if (!group) return;
+        var segment = track.querySelector('.marquee-segment');
+        if (!segment) return;
 
-        var originals = Array.from(group.querySelectorAll('.gallery-item'));
-        var itemCount = originals.length;
-        if (!itemCount) return;
-
-        group.remove();
-        originals.forEach(function (item) {
-          track.appendChild(item);
+        track.querySelectorAll('.marquee-segment').forEach(function (seg, index) {
+          if (index > 0) seg.remove();
         });
 
-        function cloneItems() {
-          track.querySelectorAll('.gallery-item[data-marquee-clone]').forEach(function (n) {
-            n.remove();
-          });
-          for (var round = 0; round < 2; round++) {
-            originals.forEach(function (item) {
-              var copy = item.cloneNode(true);
-              copy.setAttribute('data-marquee-clone', '1');
-              copy.setAttribute('aria-hidden', 'true');
-              track.appendChild(copy);
-              copy.querySelectorAll('img').forEach(function (img) {
-                img.loading = 'eager';
-                img.decoding = 'sync';
-                var src = img.getAttribute('src');
-                if (src) img.src = src;
-              });
-            });
-          }
-        }
-        cloneItems();
+        var clone = segment.cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        track.appendChild(clone);
 
-        originals.forEach(function (item) {
-          item.querySelectorAll('img').forEach(function (img) {
-            img.loading = 'eager';
-            img.decoding = 'sync';
-          });
+        track.querySelectorAll('img').forEach(function (img) {
+          img.loading = 'eager';
+          img.decoding = 'sync';
+          var src = img.getAttribute('src');
+          if (src) img.src = src;
         });
 
-        var loopWidth = 0;
-        var loopMs = 36000;
-        var tickMs = 32;
-        var paused = false;
-        var timerId = null;
         var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-        var isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-
-        function measure() {
-          var items = track.querySelectorAll('.gallery-item:not([data-marquee-clone])');
-          if (items.length < itemCount) return 0;
-
-          var start = items[0];
-          var all = track.querySelectorAll('.gallery-item');
-          var nextSet = all[itemCount];
-          var width = 0;
-
-          if (nextSet) {
-            width = nextSet.offsetLeft - start.offsetLeft;
-          }
-
-          if (width <= 0) {
-            var gap = parseFloat(window.getComputedStyle(track).columnGap || window.getComputedStyle(track).gap) || 16;
-            width = 0;
-            for (var i = 0; i < itemCount; i++) {
-              width += items[i].offsetWidth;
-            }
-            width += gap * (itemCount - 1);
-          }
-
-          loopWidth = Math.round(width);
-          return loopWidth;
-        }
-
-        function normalizeScroll() {
-          if (!loopWidth) return;
-          while (viewport.scrollLeft >= loopWidth) {
-            viewport.scrollLeft -= loopWidth;
-          }
-        }
 
         function waitForAssets(done) {
           var imgs = track.querySelectorAll('img');
@@ -1686,73 +1633,36 @@
           if (pending === 0) done();
         }
 
-        function tick() {
-          if (document.hidden || paused || reduceMotion || !loopWidth) return;
-          viewport.scrollLeft += (loopWidth / loopMs) * tickMs;
-          normalizeScroll();
-        }
-
         function start() {
-          if (timerId != null) return;
-          timerId = setInterval(tick, tickMs);
-        }
-
-        function stop() {
-          if (timerId != null) {
-            clearInterval(timerId);
-            timerId = null;
-          }
+          track.classList.remove('is-ready');
+          void track.offsetWidth;
+          if (!reduceMotion) track.classList.add('is-ready');
         }
 
         function restart() {
-          stop();
-          measure();
-          normalizeScroll();
-          if (loopWidth > 0) start();
+          start();
         }
 
         var resizeTimer;
         function scheduleRestart() {
           clearTimeout(resizeTimer);
-          resizeTimer = setTimeout(function () {
-            requestAnimationFrame(function () {
-              requestAnimationFrame(restart);
-            });
-          }, isIOS || isWeChat ? 350 : 150);
-        }
-
-        viewport.addEventListener('scroll', function () {
-          if (!loopWidth) return;
-          if (viewport.scrollLeft >= loopWidth) {
-            viewport.scrollLeft -= loopWidth;
-          }
-        }, { passive: true });
-
-        if (marquee && !isWeChat && !isIOS) {
-          marquee.addEventListener('mouseenter', function () { paused = true; });
-          marquee.addEventListener('mouseleave', function () { paused = false; });
+          resizeTimer = setTimeout(restart, 200);
         }
 
         document.addEventListener('visibilitychange', function () {
-          if (document.hidden) stop();
-          else scheduleRestart();
+          if (document.hidden) {
+            track.classList.remove('is-ready');
+          } else {
+            scheduleRestart();
+          }
         });
 
-        window.addEventListener('pageshow', function () {
-          viewport.scrollLeft = 0;
-          scheduleRestart();
-        });
-
+        window.addEventListener('pageshow', scheduleRestart);
         window.addEventListener('resize', scheduleRestart);
         window.addEventListener('orientationchange', scheduleRestart);
 
-        if (isWeChat) {
+        if (/MicroMessenger/i.test(navigator.userAgent)) {
           document.addEventListener('WeixinJSBridgeReady', scheduleRestart, false);
-        }
-
-        if (window.ResizeObserver) {
-          var ro = new ResizeObserver(scheduleRestart);
-          ro.observe(track);
         }
 
         waitForAssets(function () {
@@ -1761,8 +1671,7 @@
             : Promise.resolve();
           fontsReady.then(function () {
             scheduleRestart();
-            setTimeout(scheduleRestart, isIOS ? 800 : 300);
-            setTimeout(scheduleRestart, isIOS ? 1800 : 600);
+            setTimeout(scheduleRestart, 500);
           });
         });
       })();
