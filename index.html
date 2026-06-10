@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>xxx - Java 开发工程师</title>
+  <title>董梦兰 - Java 开发工程师</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -375,7 +375,9 @@
     }
 
     /* Project carousel */
-    .project-carousel { position: relative; }
+    .project-carousel {
+      position: relative;
+    }
 
     .carousel-viewport {
       overflow: hidden;
@@ -390,6 +392,53 @@
     .carousel-slide {
       flex: 0 0 100%;
       min-width: 100%;
+    }
+
+    .carousel-nav-btn {
+      position: absolute;
+      top: 50%;
+      z-index: 3;
+      width: 40px;
+      height: 40px;
+      margin-top: -20px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+      transition: background 0.2s, box-shadow 0.2s, opacity 0.2s, transform 0.2s;
+    }
+
+    .carousel-nav-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .carousel-nav-prev { left: -20px; }
+    .carousel-nav-next { right: -20px; }
+
+    .carousel-nav-btn:hover:not(:disabled) {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: var(--shadow-lg);
+      transform: scale(1.06);
+    }
+
+    .carousel-nav-prev:hover:not(:disabled) { transform: translateX(-2px) scale(1.06); }
+    .carousel-nav-next:hover:not(:disabled) { transform: translateX(2px) scale(1.06); }
+
+    .carousel-nav-btn:disabled {
+      opacity: 0;
+      pointer-events: none;
     }
 
     .project-card {
@@ -444,68 +493,6 @@
     }
 
     .metric { color: var(--primary); font-weight: 800; }
-
-    .carousel-controls {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 18px;
-    }
-
-    .carousel-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--primary);
-      font-size: 1.1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s, box-shadow 0.2s;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .carousel-btn:hover {
-      background: var(--primary-light);
-      box-shadow: var(--shadow);
-    }
-
-    .carousel-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .carousel-counter {
-      font-size: 0.88rem;
-      color: var(--text-light);
-      min-width: 48px;
-      text-align: center;
-    }
-
-    .carousel-dots {
-      display: flex;
-      gap: 8px;
-    }
-
-    .carousel-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      border: none;
-      background: var(--border);
-      cursor: pointer;
-      padding: 0;
-      transition: background 0.2s, transform 0.2s;
-    }
-
-    .carousel-dot.active {
-      background: var(--primary);
-      transform: scale(1.2);
-    }
 
     /* Gallery marquee */
     .gallery-marquee {
@@ -1031,12 +1018,21 @@
       .tree-leaf:hover .leaf-detail { display: block; }
       .card, .project-card { padding: 20px 22px; }
       .gallery-item { flex: 0 0 240px; }
+      .carousel-nav-prev { left: 4px; }
+      .carousel-nav-next { right: 4px; }
+      .carousel-nav-btn {
+        width: 34px;
+        height: 34px;
+        margin-top: -17px;
+        background: rgba(255, 255, 255, 0.92);
+      }
     }
 
     @media print {
       body { background: #fff; font-size: 11pt; }
-      .sidebar-nav, .back-to-top, .btn-download, .carousel-controls, .gallery-overlay, .gallery-marquee { mask-image: none; }
+      .sidebar-nav, .back-to-top, .btn-download, .carousel-nav-btn, .gallery-overlay, .gallery-marquee { mask-image: none; }
       .btn-download { display: none !important; }
+      .carousel-nav-btn { display: none !important; }
       section { opacity: 1 !important; transform: none !important; break-inside: avoid; }
 
       .carousel-viewport { overflow: visible; }
@@ -1080,7 +1076,7 @@
 <body>
 
   <!-- 将 PDF 文件放到 assets/resume.pdf -->
-  <a href="assets/resume.pdf" class="btn-download" download="董梦兰_系统研发工程师_19994410827.pdf">下载 PDF 简历</a>
+  <a href="assets/董梦兰_Java开发工程师_19994410827.pdf" class="btn-download" name="董梦兰_Java开发工程师_19994410827.pdf">下载 PDF 简历</a>
 
   <header class="hero">
     <div class="hero-bg"><div class="hero-grid"></div></div>
@@ -1091,15 +1087,14 @@
         </div>
       </div>
       <div class="hero-content hero-animate delay-1">
-        <span class="hero-tag">Backend Engineer</span>
-        <h1>xxx</h1>
+        <h1>董梦兰</h1>
         <p class="title">Java 开发工程师</p>
         <div class="contact">
           <span class="contact-item">📅 1994.08</span>
-          <span class="contact-item">📱 xxxx</span>
-          <span class="contact-item">✉️ xxxx@qq.com</span>
+          <span class="contact-item">📱 19994410827</span>
+          <span class="contact-item">✉️ 904870008@qq.com</span>
           <span class="contact-item">🎓 本科 · 中共党员</span>
-          <span class="contact-item">🏫 xxx大学</span>
+          <span class="contact-item">🏫 广西科技大学</span>
           <span class="contact-item">📘 物联网工程</span>
         </div>
 		
@@ -1151,7 +1146,6 @@
               <li>作为核心技术开发，负责系统架构设计、核心接口实现、性能攻坚与代码审查</li>
               <li>担任项目技术负责人，带领 5 人开发团队（后端 3 人 + 前端 2 人），主导需求分析、技术方案拆解与任务分配</li>
               <li>统筹 10 余家第三方厂商的接口联调、协议规范与排期协调，独立解决跨系统集成问题</li>
-              <li>有超海量数据处理经验</li>
             </ul>
           </div>
         </div>
@@ -1179,62 +1173,59 @@
         </div>
 
         <div class="project-carousel" id="projectCarousel">
+          <button class="carousel-nav-btn carousel-nav-prev" id="carouselPrev" aria-label="上一个项目" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 6 9 12 15 18"></polyline></svg>
+          </button>
           <div class="carousel-viewport">
             <div class="carousel-track" id="carouselTrack">
 
               <div class="carousel-slide">
                 <article class="project-card">
-                  <h3>高并发查询性能优化 <span class="badge">14s → 500ms</span></h3>
-                  <div class="project-section"><h4>问题背景</h4><p>业务系统核心查询表数据总量超 1000 万，日均增量 3-4 万条。业务需要支持多字段任意子串模糊匹配组合查询，且要求实时返回结果。优化前页面查询耗时约 14 秒，高峰期数据库连接池经常耗尽。</p></div>
+                  <h3>千万级数据查询性能优化 <span class="badge">14s → 1s左右</span></h3>
+                  <div class="project-section"><h4>问题背景</h4><p>千万级表因 UUID 主键、字符串时间、大量 NULL 值、触发器拖累、循环入库、大字段关联及多字段 OR 模糊匹配等问题，导致查询耗时 14 秒、连接池频繁耗尽。</p></div>
                   <div class="project-section"><h4>解决思路</h4><ul>
-                    <li><strong>索引策略</strong>：ngram 分词器替代 LIKE 模糊匹配</li>
-                    <li><strong>扫描范围控制</strong>：时间范围限制 + 分区表</li>
-                    <li><strong>写入优化</strong>：批量入库，降低 IO 和索引更新压力</li>
-                    <li><strong>异步化解耦</strong>：同步触发器改为异步消息队列</li>
+                    <li><strong>主键优化</strong>：UUID 主键改为自增 INT，UUID 降级为普通唯一索引，消除页分裂</li>
+                    <li><strong>时间字段优化</strong>：新增 DATETIME 虚拟列替代字符串时间，建立索引，使时间范围查询走索引</li>
+                    <li><strong>NULL 值优化</strong>：将 data_source 和 status 的 NULL 改为默认值并设为 NOT NULL，提升索引选择性</li>
+                    <li><strong>触发器异步化</strong>：删除原触发器，通过自研数据抽取平台推送至 FTP，供下游消费，解除入库同步阻塞</li>
+                    <li><strong>批量入库</strong>：循环单条 INSERT 改为 JDBC batch 批量提交（500 条/批）</li>
+                    <li><strong>模糊查询优化</strong>：界面改为下拉选择指定字段匹配，避免多字段 OR 模糊查询</li>
+                    <li><strong>异步加载大字段</strong>：列表不加载大字段，详情按需异步加载</li>
+                    <li><strong>分层冗余表</strong>：维护近 3/7/30 天冗余表，按时间范围路由到小表，减少扫描量</li>
                   </ul></div>
-                  <div class="project-section"><h4>优化效果</h4><p><span class="metric">14 秒 → 500ms</span>，降低约 60%</p></div>
+                  <div class="project-section"><h4>优化效果</h4><p>慢查询耗时从平均 <span class="metric">14 s → 降至 1 s左右</span></p></div>
                 </article>
               </div>
 
               <div class="carousel-slide">
                 <article class="project-card">
-                  <h3>高并发标签命中校验 <span class="badge">10s → 800ms</span></h3>
-                  <div class="project-section"><h4>问题背景</h4><p>对外接口需校验请求数据是否命中多个标签，原串行查询平均响应 10 秒左右，高并发下数据库崩溃。</p></div>
+                  <h3>高并发标签命中校验 <span class="badge">5-10s → 1s左右</span></h3>
+                  <div class="project-section"><h4>问题背景</h4><p>对外接口需校验请求数据是否命中多个标签，原串行查询数据库平均响应 10 秒左右，高并发下系统响应超时，频繁出现服务不可用。</p></div>
                   <div class="project-section"><h4>解决思路</h4><ul>
-                    <li><strong>前置过滤</strong> + <strong>并行化</strong> + <strong>多级缓存</strong></li>
-                    <li><strong>布隆过滤器</strong>过滤无效主键 + Kafka 异步刷日志</li>
-                    <li><strong>限流熔断</strong>保障系统稳定性</li>
+                    <li><strong>前置过滤</strong>：无效请求直接拦截，减少无效穿透</li>
+                    <li><strong>并行化</strong>：串行改并行，耗时从累加变为最大单次</li>
+                    <li><strong>Redis 缓存</strong>：缓存命中结果，降低数据库访问</li>
+                    <li><strong>布隆过滤器</strong>：快速判断不存在的主键，避免缓存穿透</li>
+                    <li><strong>异步解耦</strong>：线程池异步刷日志，接口内只生产和响应</li>
+                    <li><strong>限流熔断</strong>：保障系统不被冲垮</li>
                   </ul></div>
-                  <div class="project-section"><h4>优化效果</h4><p><span class="metric">10 秒左右 → 800ms</span></p></div>
+                  <div class="project-section"><h4>优化效果</h4><p><span class="metric">5-10 s → 降至 1 s左右</span></p></div>
                 </article>
               </div>
 
               <div class="carousel-slide">
                 <article class="project-card">
-                  <h3>Kafka 异步解耦优化 <span class="badge">11min → 15s</span></h3>
-                  <div class="project-section"><h4>问题背景</h4><p>每批 1000-3000 条，同步循环入库 + 多渠道通知，单批耗时 11-22 分钟。</p></div>
+                  <h3>Kafka 异步解耦优化 <span class="badge">11min → 30s左右</span></h3>
+                  <div class="project-section"><h4>问题背景</h4><p>每批数据量达 <strong>1000-3000 条</strong>，同步循环执行入库、短信、企业微信消息、语音平台推送，单条处理约 450ms，总耗时达 <strong>11-22 分钟</strong>。</p></div>
                   <div class="project-section"><h4>解决思路</h4><ul>
-                    <li>Kafka 拉取与消费分离，独立消费者组故障隔离</li>
-                    <li>指数退避重试 + 死信表人工补偿，全链路可追溯</li>
+                    <li>引入 Kafka 实现拉取与消费分离，定时任务仅负责分页拉取 + 发送消息</li>
+                    <li>短信、企业微信、语音平台拆分为独立消费者组，实现故障隔离和并发控制</li>
+                    <li>消费端实现自动重试（指数退避，最多 3 次）+ 死信表人工补偿</li>
+                    <li>新增通知记录表，全链路可追溯</li>
                   </ul></div>
                   <div class="project-section"><h4>优化效果</h4><ul>
-                    <li>定时任务：<span class="metric">11 分钟 → 15 秒</span></li>
-                    <li>通知成功率：<span class="metric">91% → 98%</span></li>
-                  </ul></div>
-                </article>
-              </div>
-
-              <div class="carousel-slide">
-                <article class="project-card">
-                  <h3>Kafka 上游数据接入可靠性改造 <span class="badge">丢失率 0.5% → 0</span></h3>
-                  <div class="project-section"><h4>问题背景</h4><p>上游系统通过 HTTP 接口推送预警数据，存在数据丢失、责任不清、人工成本高（月均 15+ 工单）三大问题。</p></div>
-                  <div class="project-section"><h4>解决思路</h4><ul>
-                    <li>acks=all + 幂等生产者，失败表 + 指数退避重试</li>
-                    <li>手动提交 offset + Redis 幂等去重，约定「Kafka 为界」</li>
-                  </ul></div>
-                  <div class="project-section"><h4>优化效果</h4><ul>
-                    <li>丢失率 <span class="metric">0.5% → 0</span>，人工介入 <span class="metric">15 次/月 → 0</span></li>
-                    <li>已推广至团队其他 3 个接入场景</li>
+                    <li>定时任务执行时间：<span class="metric">11 min → 降至 30 s左右</span></li>
+                    <li>通知发送成功率：<span class="metric">91% → 98%</span>（自动重试）</li>
                   </ul></div>
                 </article>
               </div>
@@ -1242,26 +1233,25 @@
               <div class="carousel-slide">
                 <article class="project-card">
                   <h3>老系统智能化升级 → 问答助手</h3>
-                  <div class="project-section"><h4>问题背景</h4><p>老系统需支持自然语言生成行为画像报告或查询表信息。</p></div>
+                  <div class="project-section"><h4>问题背景</h4><p>老系统需新增智能能力，支持用户通过自然语言生成人物行为画像报告或查询表信息。</p></div>
                   <div class="project-section"><h4>解决思路</h4><ul>
-                    <li>Dify 工作流：意图识别 → Switch 路由 → 画像 / 查表 / 兜底</li>
-                    <li>iframe 零侵入嵌入，配置化白名单 + 敏感字段脱敏</li>
+                    <li>基于 <strong>Dify 工作流</strong>编排：LLM 意图识别 → Switch 分支路由 → 画像生成 / 查表查询 / 兜底回复</li>
+                    <li>将 Dify Web App 通过 <strong>iframe 嵌入</strong>老系统，零侵入集成</li>
+                    <li>画像生成：查询老系统行为数据 → LLM 生成报告</li>
+                    <li>自助查询：配置化白名单 + 参数化查询，敏感字段自动脱敏</li>
                   </ul></div>
                   <div class="project-section"><h4>效果</h4><ul>
-                    <li>学习成本降低 <span class="metric">80%</span>，开发周期缩短 <span class="metric">70%</span></li>
+                    <li>自然语言交互，学习成本降低 <span class="metric">80%</span></li>
+                    <li>开发周期缩短 <span class="metric">70%</span>，老系统核心流程零改动</li>
                   </ul></div>
                 </article>
               </div>
 
             </div>
           </div>
-
-          <div class="carousel-controls">
-            <button class="carousel-btn" id="carouselPrev" aria-label="上一个项目">‹</button>
-            <span class="carousel-counter" id="carouselCounter">1 / 5</span>
-            <div class="carousel-dots" id="carouselDots"></div>
-            <button class="carousel-btn" id="carouselNext" aria-label="下一个项目">›</button>
-          </div>
+          <button class="carousel-nav-btn carousel-nav-next" id="carouselNext" aria-label="下一个项目" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"></polyline></svg>
+          </button>
         </div>
       </section>
 
@@ -1409,7 +1399,7 @@
                       <span class="leaf-tag">GC</span>
                       <span class="leaf-tag">Arthas</span>
                     </div>
-                    <div class="leaf-detail">熟悉集合、多线程、并发工具类；熟悉 JVM 内存结构与 GC；熟练使用 jstat、jmap、jstack、Arthas 排查</div>
+                    <div class="leaf-detail">熟悉集合、多线程、并发工具类；熟悉 JVM 内存结构及 GC 算法，熟练使用 jastat、jmap、jstack 工具、arthas 进行问题排查</div>
                   </li>
                   <li class="tree-leaf" tabindex="0">
                     <span class="leaf-title">设计模式</span>
@@ -1418,7 +1408,7 @@
                       <span class="leaf-tag">策略</span>
                       <span class="leaf-tag">责任链</span>
                     </div>
-                    <div class="leaf-detail">熟悉工厂、策略、责任链等常用模式，并在项目中实践落地</div>
+                    <div class="leaf-detail">熟悉工厂、策略、责任链等常用模式，并在项目中实践</div>
                   </li>
                 </ul>
               </div>
@@ -1433,7 +1423,7 @@
                       <span class="leaf-tag">IOC</span>
                       <span class="leaf-tag">AOP</span>
                     </div>
-                    <div class="leaf-detail">熟练使用 Spring Boot / MVC，理解 IOC、AOP 原理，能基于原理解决事务失效、日志记录等问题</div>
+                    <div class="leaf-detail">熟练使用 Spring Boot / Spring MVC，理解 IOC、AOP 原理，能基于这些原理解决事务失效、日志记录等问题</div>
                   </li>
                 </ul>
               </div>
@@ -1448,7 +1438,7 @@
                       <span class="leaf-tag">InnoDB</span>
                       <span class="leaf-tag">千万级</span>
                     </div>
-                    <div class="leaf-detail">熟悉 MySQL / PostgreSQL，研究 InnoDB 事务与索引原理，有千万级模糊匹配优化经验</div>
+                    <div class="leaf-detail">熟悉 MySQL / PostgreSQL，掌握 InnoDB 事务机制和索引原理，有千万级数据优化经验</div>
                   </li>
                   <li class="tree-leaf" tabindex="0">
                     <span class="leaf-title">缓存</span>
@@ -1456,29 +1446,22 @@
                       <span class="leaf-tag">Redis</span>
                       <span class="leaf-tag">布隆过滤器</span>
                     </div>
-                    <div class="leaf-detail">Redis 旁路/穿透/雪崩模式，布隆过滤器 + 缓存实践</div>
+                    <div class="leaf-detail">熟练使用 Redis，能根据业务场景选择缓存模式（旁路、穿透、防雪崩），实践中用过布隆过滤器 + 缓存</div>
                   </li>
                 </ul>
               </div>
 
               <div class="tree-branch">
-                <div class="tree-node cat">分布式</div>
+                <div class="tree-node cat">消息中间件</div>
                 <ul class="tree-leaves">
                   <li class="tree-leaf" tabindex="0">
-                    <span class="leaf-title">消息中间件</span>
+                    <span class="leaf-title">Kafka / RocketMQ</span>
                     <div class="leaf-tags">
-                      <span class="leaf-tag">Kafka</span>
-                      <span class="leaf-tag">RocketMQ</span>
+                      <span class="leaf-tag">异步解耦</span>
+                      <span class="leaf-tag">削峰填谷</span>
+                      <span class="leaf-tag">幂等</span>
                     </div>
-                    <div class="leaf-detail">Kafka / RocketMQ 异步解耦、削峰填谷；消息丢失、重复消费、顺序消费落地方案</div>
-                  </li>
-                  <li class="tree-leaf" tabindex="0">
-                    <span class="leaf-title">分布式事务</span>
-                    <div class="leaf-tags">
-                      <span class="leaf-tag">2PC</span>
-                      <span class="leaf-tag">TCC</span>
-                    </div>
-                    <div class="leaf-detail">熟悉 2PC、TCC 原理，有 2PC 实现分布式事务的经验</div>
+                    <div class="leaf-detail">Kafka / RocketMQ，用于异步解耦、削峰填谷；对消息丢失、重复消费、顺序消费有落地方案</div>
                   </li>
                 </ul>
               </div>
@@ -1491,9 +1474,9 @@
                     <div class="leaf-tags">
                       <span class="leaf-tag">Dify</span>
                       <span class="leaf-tag">RAG</span>
-                      <span class="leaf-tag">ChromaDB</span>
+                      <span class="leaf-tag">Xtuner</span>
                     </div>
-                    <div class="leaf-detail">基于 Dify 搭建问答助手，老系统零侵入集成；学习 RAG、Xtuner 微调，可实现 ChromaDB RAG 系统</div>
+                    <div class="leaf-detail">基于 Dify 快速搭建问答助手，完成老系统零侵入集成；了解 RAG 原理及 Xtuner 微调</div>
                   </li>
                 </ul>
               </div>
@@ -1509,7 +1492,7 @@
           <h2 class="section-title">自我评价</h2>
         </div>
         <div class="card">
-          <p class="about-text">8 年 Java 后端经验，擅长高并发性能优化与数据库调优（千万级数据 14 秒 → 毫秒级）。具备大模型应用开发能力（RAG / 微调 / Dify），首次将 Dify 工作流引入公司，实现老系统智能化升级。担任过技术负责人，带 5 人团队，热爱技术攻坚与代码交付，沟通高效，能落地、能沉淀。</p>
+          <p class="about-text">8 年 Java 后端经验，擅长高并发性能优化与数据库调优，具备大模型应用开发能力（RAG / 微调 / Dify），首次将 Dify 工作流引入公司，实现老系统智能化升级。担任过技术负责人，带 5 人团队，热爱技术攻坚与代码交付，沟通高效，能落地、能沉淀。</p>
         </div>
       </section>
 
@@ -1598,39 +1581,17 @@
       var current = 0;
       var prevBtn = document.getElementById('carouselPrev');
       var nextBtn = document.getElementById('carouselNext');
-      var counter = document.getElementById('carouselCounter');
-      var dotsWrap = document.getElementById('carouselDots');
-
-      if (total > 0 && dotsWrap) {
-        for (var i = 0; i < total; i++) {
-          var dot = document.createElement('button');
-          dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-          dot.setAttribute('aria-label', '项目 ' + (i + 1));
-          dot.dataset.index = i;
-          dotsWrap.appendChild(dot);
-        }
-      }
 
       function goTo(index) {
         if (index < 0 || index >= total) return;
         current = index;
         track.style.transform = 'translateX(-' + (current * 100) + '%)';
-        if (counter) counter.textContent = (current + 1) + ' / ' + total;
         if (prevBtn) prevBtn.disabled = current === 0;
         if (nextBtn) nextBtn.disabled = current === total - 1;
-        dotsWrap.querySelectorAll('.carousel-dot').forEach(function (d, i) {
-          d.classList.toggle('active', i === current);
-        });
       }
 
       if (prevBtn) prevBtn.addEventListener('click', function () { goTo(current - 1); });
       if (nextBtn) nextBtn.addEventListener('click', function () { goTo(current + 1); });
-      if (dotsWrap) {
-        dotsWrap.addEventListener('click', function (e) {
-          var dot = e.target.closest('.carousel-dot');
-          if (dot) goTo(parseInt(dot.dataset.index, 10));
-        });
-      }
 
       document.addEventListener('keydown', function (e) {
         var projects = document.getElementById('projects');
