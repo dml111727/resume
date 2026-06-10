@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>董梦兰 - Java 开发工程师</title>
+  <title>姓名 - Java 开发工程师</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -504,20 +504,29 @@
     .marquee-track {
       display: flex;
       width: max-content;
-      animation: marqueeScroll 36s linear infinite;
+      will-change: transform;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      animation: marqueeScroll var(--marquee-duration, 36s) linear infinite;
+      animation-play-state: paused;
     }
 
-    .gallery-marquee:hover .marquee-track {
+    .marquee-track.is-ready {
+      animation-play-state: running;
+    }
+
+    .gallery-marquee:hover .marquee-track.is-ready {
       animation-play-state: paused;
     }
 
     @keyframes marqueeScroll {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(calc(-1 * var(--marquee-distance, 50%)), 0, 0); }
     }
 
     .marquee-group {
       display: flex;
+      flex-shrink: 0;
       gap: 16px;
       padding-right: 16px;
     }
@@ -1076,7 +1085,7 @@
 <body>
 
   <!-- 将 PDF 文件放到 assets/resume.pdf -->
-  <a href="assets/董梦兰_Java开发工程师_19994410827.pdf" class="btn-download" name="董梦兰_Java开发工程师_19994410827.pdf">下载 PDF 简历</a>
+  <a href="assets/姓名_Java开发工程师_手机号.pdf" class="btn-download" name="姓名_Java开发工程师_手机号.pdf">下载 PDF 简历</a>
 
   <header class="hero">
     <div class="hero-bg"><div class="hero-grid"></div></div>
@@ -1087,12 +1096,13 @@
         </div>
       </div>
       <div class="hero-content hero-animate delay-1">
-        <h1>董梦兰</h1>
+        <h1>姓名</h1>
         <p class="title">Java 开发工程师</p>
         <div class="contact">
+          <span class="contact-item">📍 广西 · 南宁</span>
           <span class="contact-item">📅 1994.08</span>
-          <span class="contact-item">📱 19994410827</span>
-          <span class="contact-item">✉️ 904870008@qq.com</span>
+          <span class="contact-item">📱 手机号</span>
+          <span class="contact-item">✉️ 邮箱</span>
           <span class="contact-item">🎓 本科 · 中共党员</span>
           <span class="contact-item">🏫 广西科技大学</span>
           <span class="contact-item">📘 物联网工程</span>
@@ -1604,6 +1614,73 @@
       });
 
       goTo(0);
+
+      /* Gallery marquee — 按首组实际宽度滚动，图片加载后再启动，避免手机端播完停住 */
+      (function initMarquee() {
+        var track = document.querySelector('.marquee-track');
+        if (!track) return;
+
+        var marquee = track.closest('.gallery-marquee');
+        var groups = track.querySelectorAll('.marquee-group');
+        if (groups.length < 2 && groups[0]) {
+          track.appendChild(groups[0].cloneNode(true));
+          groups = track.querySelectorAll('.marquee-group');
+        }
+
+        var resizeTimer;
+        function measureAndRun() {
+          var first = track.querySelector('.marquee-group');
+          if (!first) return;
+          var distance = first.offsetWidth;
+          if (distance <= 0) return;
+
+          track.style.setProperty('--marquee-distance', distance + 'px');
+          track.style.setProperty('--marquee-duration', Math.max(24, distance / 28) + 's');
+
+          track.classList.remove('is-ready');
+          void track.offsetWidth;
+          track.classList.add('is-ready');
+        }
+
+        function scheduleMeasure() {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(measureAndRun, 120);
+        }
+
+        var imgs = track.querySelectorAll('img');
+        var pending = 0;
+        imgs.forEach(function (img) {
+          if (img.complete) return;
+          pending++;
+          img.addEventListener('load', function () {
+            pending--;
+            if (pending <= 0) scheduleMeasure();
+          });
+          img.addEventListener('error', function () {
+            pending--;
+            if (pending <= 0) scheduleMeasure();
+          });
+        });
+
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(scheduleMeasure);
+        }
+
+        window.addEventListener('resize', scheduleMeasure);
+        window.addEventListener('orientationchange', scheduleMeasure);
+
+        if (marquee && 'IntersectionObserver' in window) {
+          var marqueeObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) scheduleMeasure();
+            });
+          }, { threshold: 0.1 });
+          marqueeObserver.observe(marquee);
+        }
+
+        scheduleMeasure();
+        setTimeout(scheduleMeasure, 600);
+      })();
 
       /* Lightbox */
       var lightbox = document.getElementById('lightbox');
