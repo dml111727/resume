@@ -1182,7 +1182,7 @@
               <h3>Java 开发工程师</h3>
               <span class="period">2017.12 – 2026.05</span>
             </div>
-            <p class="work-company">中国信息通信科技集团 · 南京烽火星空通信发展有限公司 · 网安行业支撑单位</p>
+            <p class="work-company">中国信息通信科技集团 - 南京烽火星空通信发展有限公司 · 网安行业支撑单位</p>
             <ul>
               <li>作为核心技术开发，负责系统架构设计、核心接口实现、性能攻坚与代码审查</li>
               <li>担任项目技术负责人，带领 5 人开发团队（后端 3 人 + 前端 2 人），主导需求分析、技术方案拆解与任务分配</li>
@@ -1225,14 +1225,14 @@
                   <h3>千万级数据查询性能优化 <span class="badge">14s → 1s左右</span></h3>
                   <div class="project-section"><h4>问题背景</h4><p>千万级表因 UUID 主键、字符串时间、大量 NULL 值、触发器拖累、循环入库、大字段关联及多字段 OR 模糊匹配等问题，导致查询耗时 14 秒、连接池频繁耗尽。</p></div>
                   <div class="project-section"><h4>解决思路</h4><ul>
-                    <li><strong>主键优化</strong>：UUID 主键改为自增 INT，UUID 降级为普通唯一索引，消除页分裂</li>
-                    <li><strong>时间字段优化</strong>：新增 DATETIME 虚拟列替代字符串时间，建立索引，使时间范围查询走索引</li>
+                    <li><strong>主键优化</strong>：新增一个 INT 类型字段作为主键，将 UUID 降级为普通唯一索引，消除页分裂</li>
+                    <li><strong>时间字段优化</strong>：新增 DATETIME 字段替代字符串时间，建立索引，使时间范围查询走索引</li>
                     <li><strong>NULL 值优化</strong>：将 data_source 和 status 的 NULL 改为默认值并设为 NOT NULL，提升索引选择性</li>
-                    <li><strong>触发器异步化</strong>：删除原触发器，通过自研数据抽取平台推送至 FTP，供下游消费，解除入库同步阻塞</li>
-                    <li><strong>批量入库</strong>：循环单条 INSERT 改为 JDBC batch 批量提交（500 条/批）</li>
-                    <li><strong>模糊查询优化</strong>：界面改为下拉选择指定字段匹配，避免多字段 OR 模糊查询</li>
-                    <li><strong>异步加载大字段</strong>：列表不加载大字段，详情按需异步加载</li>
-                    <li><strong>分层冗余表</strong>：维护近 3/7/30 天冗余表，按时间范围路由到小表，减少扫描量</li>
+                    <li><strong>触发器异步化</strong>：删除原触发器，通过公司自研数据抽取平台将数据推送至 FTP，供下游网络消费，解除入库时的同步阻塞</li>
+                    <li><strong>批量入库</strong>：循环单条 INSERT 改为 JDBC batch 批量提交（500 条/批），减少事务和网络开销</li>
+                    <li><strong>模糊查询优化</strong>：界面改为下拉选择指定字段进行匹配，避免多字段 OR 模糊查询</li>
+                    <li><strong>异步加载大字段</strong>：列表查询不加载，详情按需异步加载，避免关联查询</li>
+                    <li><strong>分层冗余表</strong>：维护近 3 天、近 7 天、近 30 天三张冗余表，查询时根据用户选择的时间范围路由到对应小表，大幅减少扫描数据量</li>
                   </ul></div>
                   <div class="project-section"><h4>优化效果</h4><p>慢查询耗时从平均 <span class="metric">14 s → 降至 1 s左右</span></p></div>
                 </article>
@@ -1240,7 +1240,7 @@
 
               <div class="carousel-slide">
                 <article class="project-card">
-                  <h3>高并发标签命中校验 <span class="badge">5-10s → 1s左右</span></h3>
+                  <h3>高并发标签命中校验 <span class="badge">5-10s → 1-2s（缓存命中时 < 1s）</span></h3>
                   <div class="project-section"><h4>问题背景</h4><p>对外接口需校验请求数据是否命中多个标签，原串行查询数据库平均响应 10 秒左右，高并发下系统响应超时，频繁出现服务不可用。</p></div>
                   <div class="project-section"><h4>解决思路</h4><ul>
                     <li><strong>前置过滤</strong>：无效请求直接拦截，减少无效穿透</li>
@@ -1248,25 +1248,25 @@
                     <li><strong>Redis 缓存</strong>：缓存命中结果，降低数据库访问</li>
                     <li><strong>布隆过滤器</strong>：快速判断不存在的主键，避免缓存穿透</li>
                     <li><strong>异步解耦</strong>：线程池异步刷日志，接口内只生产和响应</li>
-                    <li><strong>限流熔断</strong>：保障系统不被冲垮</li>
+                    <li><strong>限流熔断</strong>：限流熔断，保障系统不被冲垮</li>
                   </ul></div>
-                  <div class="project-section"><h4>优化效果</h4><p><span class="metric">5-10 s → 降至 1 s左右</span></p></div>
+                  <div class="project-section"><h4>优化效果</h4><p><span class="metric">5-10 s → 1-2s（缓存命中时 < 1s）</span></p></div>
                 </article>
               </div>
 
               <div class="carousel-slide">
                 <article class="project-card">
-                  <h3>Kafka 异步解耦优化 <span class="badge">11min → 30s左右</span></h3>
-                  <div class="project-section"><h4>问题背景</h4><p>每批数据量达 <strong>1000-3000 条</strong>，同步循环执行入库、短信、企业微信消息、语音平台推送，单条处理约 450ms，总耗时达 <strong>11-22 分钟</strong>。</p></div>
+                  <h3>基于 Kafka 的上游数据接入可靠性改造 <span class="badge">丢数 → 零丢失</span></h3>
+                  <div class="project-section"><h4>问题背景</h4><p>上游系统通过 HTTP 接口推送预警数据，经常出现数据丢失（服务重启就没了）、责任扯皮（上下游都不认账），每个月要花大量时间排查，差不多 <strong>每月十几单工单</strong>。</p></div>
                   <div class="project-section"><h4>解决思路</h4><ul>
-                    <li>引入 Kafka 实现拉取与消费分离，定时任务仅负责分页拉取 + 发送消息</li>
-                    <li>短信、企业微信、语音平台拆分为独立消费者组，实现故障隔离和并发控制</li>
-                    <li>消费端实现自动重试（指数退避，最多 3 次）+ 死信表人工补偿</li>
-                    <li>新增通知记录表，全链路可追溯</li>
+                    <li><strong>上游侧</strong>：改成写 Kafka，确保消息可靠写入；发送失败会写本地失败表，定时重试</li>
+                    <li><strong>Kafka 侧</strong>：用的公司标准集群，副本数保证数据不丢</li>
+                    <li><strong>下游侧</strong>：手动提交 offset，消费端做了幂等处理，消费失败会告警</li>
+                    <li><strong>责任边界</strong>：约定「Kafka 为界」，上游保证写入，下游保证消费，故障归属 5 分钟可判定</li>
                   </ul></div>
                   <div class="project-section"><h4>优化效果</h4><ul>
-                    <li>定时任务执行时间：<span class="metric">11 min → 降至 30 s左右</span></li>
-                    <li>通知发送成功率：<span class="metric">91% → 98%</span>（自动重试）</li>
+                    <li>上线后基本没再丢过数据</li>
+                    <li>人工排查工单从 <span class="metric">每月十几单 → 基本没有</span></li>
                   </ul></div>
                 </article>
               </div>
@@ -1276,14 +1276,14 @@
                   <h3>老系统智能化升级 → 问答助手</h3>
                   <div class="project-section"><h4>问题背景</h4><p>老系统需新增智能能力，支持用户通过自然语言生成人物行为画像报告或查询表信息。</p></div>
                   <div class="project-section"><h4>解决思路</h4><ul>
-                    <li>基于 <strong>Dify 工作流</strong>编排：LLM 意图识别 → Switch 分支路由 → 画像生成 / 查表查询 / 兜底回复</li>
-                    <li>将 Dify Web App 通过 <strong>iframe 嵌入</strong>老系统，零侵入集成</li>
-                    <li>画像生成：查询老系统行为数据 → LLM 生成报告</li>
-                    <li>自助查询：配置化白名单 + 参数化查询，敏感字段自动脱敏</li>
+                    <li>基于 <strong>Dify 工作流</strong>编排：LLM 意图识别 → Switch 分支路由 → 分别执行画像生成 / 查表查询 / 兜底回复</li>
+                    <li>将 Dify Web App 通过 <strong>iframe 嵌入</strong>老系统</li>
+                    <li>画像生成：查询老系统行为数据，通过 LLM 生成报告</li>
+                    <li>自助查询：通过 MCP 工具连接数据库，配置化白名单 + 参数化查询，敏感字段自动脱敏</li>
                   </ul></div>
                   <div class="project-section"><h4>效果</h4><ul>
-                    <li>自然语言交互，学习成本降低 <span class="metric">80%</span></li>
-                    <li>开发周期缩短 <span class="metric">70%</span>，老系统核心流程零改动</li>
+                    <li>快速在老系统集成智能化功能</li>
+                    <li>Dify 工作流支持拖拽调整，业务人员可参与调优</li>
                   </ul></div>
                 </article>
               </div>
@@ -1386,7 +1386,7 @@
                       <span class="leaf-tag">GC</span>
                       <span class="leaf-tag">Arthas</span>
                     </div>
-                    <div class="leaf-detail">熟悉集合、多线程、并发工具类；熟悉 JVM 内存结构及 GC 算法，熟练使用 jastat、jmap、jstack 工具、arthas 进行问题排查</div>
+                    <div class="leaf-detail">熟悉集合、多线程、并发工具类；熟悉 JVM 内存结构及 GC 算法，熟练使用 jstat、jmap、jstack、arthas 进行问题排查</div>
                   </li>
                   <li class="tree-leaf" tabindex="0">
                     <span class="leaf-title">设计模式</span>
