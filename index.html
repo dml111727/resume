@@ -1184,8 +1184,10 @@
             </div>
             <p class="work-company">中国信息通信科技集团 - 南京烽火星空通信发展有限公司 · 网安行业支撑单位</p>
             <ul>
-              <li>作为核心技术开发，负责系统架构设计、核心接口实现、性能攻坚与代码审查</li>
-              <li>担任项目技术负责人，带领 5 人开发团队（后端 3 人 + 前端 2 人），主导需求分析、技术方案拆解与任务分配</li>
+              <li>担任核心开发与技术骨干，负责核心模块架构设计、核心接口实现、性能攻坚与代码审查，保障系统高可用与可扩展性</li>
+              <li>项目经理休假期间临时代理带队，推动 Jira 存量 78 个问题全部清零，同步承接客户新增需求交付；针对此前部署流程混乱、已修复问题反复出现的顽疾，建立规范化发布机制</li>
+              <li>兼任项目管理职责，协调 5 人研发团队（后端 3 人 + 前端 2 人）的需求拆解、任务分配与进度把控</li>
+              <li>主导系统性能优化与线上故障治理，通过<strong>服务限流、熔断降级、异步解耦</strong>等手段保障系统稳定性</li>
               <li>统筹 10 余家第三方厂商的接口联调、协议规范与排期协调，独立解决跨系统集成问题</li>
             </ul>
           </div>
@@ -1201,14 +1203,20 @@
         <div class="notice">说明：因项目涉及敏感业务信息，以下内容已做脱敏处理，仅保留技术层面描述。</div>
 
         <div class="card" style="margin-bottom: 16px;">
-          <h3 style="font-size: 0.92rem; margin-bottom: 12px; color: var(--text-light); font-weight: 600;">技术栈</h3>
+          <h3 style="font-size: 0.92rem; margin-bottom: 12px; color: var(--text-light); font-weight: 600;">项目概述</h3>
+          <p style="font-size: 0.92rem; line-height: 1.8; margin-bottom: 10px; color: var(--text);">系统采用 <strong>Spring Cloud Alibaba 微服务架构</strong>（Nacos 服务发现 + OpenFeign 通信 + Gateway 网关路由 + Sentinel 限流熔断），按业务域拆分为数据接入、分析引擎、配置管理、数据实战、对外服务五个独立子系统，通过 <strong>SkyWalking</strong> 实现全链路监控。数据层使用 MySQL + Redis + Kafka，部署环境基于 Docker Compose。</p>
+          <p style="font-size: 0.88rem; line-height: 1.7; margin-bottom: 14px; color: var(--text-light);">以下优化分布于数据接入、对外服务等具体微服务，以及系统迁移前后的遗留模块。</p>
           <div class="tech-stack">
-            <span class="pill">Bootstrap</span>
-            <span class="pill">自研低代码平台</span>
-            <span class="pill">Spring Boot</span>
+            <span class="pill">Spring Cloud Alibaba</span>
+            <span class="pill">Nacos</span>
+            <span class="pill">OpenFeign</span>
+            <span class="pill">Gateway</span>
+            <span class="pill">Sentinel</span>
+            <span class="pill">SkyWalking</span>
             <span class="pill">MySQL</span>
             <span class="pill">Redis</span>
             <span class="pill">Kafka</span>
+            <span class="pill">Docker Compose</span>
             <span class="pill">Dify</span>
           </div>
         </div>
@@ -1222,68 +1230,74 @@
 
               <div class="carousel-slide">
                 <article class="project-card">
-                  <h3>千万级数据查询性能优化 <span class="badge">14s → 1s左右</span></h3>
-                  <div class="project-section"><h4>问题背景</h4><p>千万级表因 UUID 主键、字符串时间、大量 NULL 值、触发器拖累、循环入库、大字段关联及多字段 OR 模糊匹配等问题，导致查询耗时 14 秒、连接池频繁耗尽。</p></div>
-                  <div class="project-section"><h4>解决思路</h4><ul>
-                    <li><strong>主键优化</strong>：新增一个 INT 类型字段作为主键，将 UUID 降级为普通唯一索引，消除页分裂</li>
-                    <li><strong>时间字段优化</strong>：新增 DATETIME 字段替代字符串时间，建立索引，使时间范围查询走索引</li>
-                    <li><strong>NULL 值优化</strong>：将 data_source 和 status 的 NULL 改为默认值并设为 NOT NULL，提升索引选择性</li>
-                    <li><strong>触发器异步化</strong>：删除原触发器，通过公司自研数据抽取平台将数据推送至 FTP，供下游网络消费，解除入库时的同步阻塞</li>
-                    <li><strong>批量入库</strong>：循环单条 INSERT 改为 JDBC batch 批量提交（500 条/批），减少事务和网络开销</li>
-                    <li><strong>模糊查询优化</strong>：界面改为下拉选择指定字段进行匹配，避免多字段 OR 模糊查询</li>
-                    <li><strong>异步加载大字段</strong>：列表查询不加载，详情按需异步加载，避免关联查询</li>
-                    <li><strong>分层冗余表</strong>：维护近 3 天、近 7 天、近 30 天三张冗余表，查询时根据用户选择的时间范围路由到对应小表，大幅减少扫描数据量</li>
+                  <h3>系统重构数据迁移与平滑上线 <span class="badge">1 个月 · 零中断</span></h3>
+                  <div class="project-section"><h4>背景</h4><p>接手一个已完成开发但未正式上线的新系统，需在 <strong>1 个月内</strong>完成老系统（生产环境）到新系统的数据迁移，并确保用户无感知切换。</p></div>
+                  <div class="project-section"><h4>核心职责与行动</h4><ul>
+                    <li><strong>数据迁移方案设计与执行</strong>：梳理新老库 <strong>50+ 张表</strong>的字段映射关系，处理复杂结构转换（如 JSON 配置字段的格式适配），通过<strong>自研数据抽取平台配置字段映射 + 视图方式</strong>完成全量数据迁移</li>
+                    <li><strong>灰度发布与并行验证</strong>：采用<strong>双写策略</strong>，新系统上线后老系统数据变更同步写入新库，保障数据实时一致；通过<strong>用户灰度</strong>（指定客户试用）逐步放量，收集反馈并快速迭代修复</li>
+                    <li><strong>数据一致性保障</strong>：试用期间<strong>每日对账</strong>（比对双写数据量及关键字段抽样），确保新旧系统数据一致，发现问题即时处理；稳定运行一周后<strong>平滑关闭老系统写入</strong>，完成全量切换，<strong>业务零中断、数据零丢失</strong></li>
                   </ul></div>
-                  <div class="project-section"><h4>优化效果</h4><p>慢查询耗时从平均 <span class="metric">14 s → 降至 1 s左右</span></p></div>
+                  <div class="project-section"><h4>成果</h4><p>在 <strong>1 个月</strong>内完成从数据迁移到正式上线的全流程，新系统平稳承接业务；通过<strong>灰度验证 + 每日对账</strong>机制，实现上线期间 <span class="metric">0 数据丢失、0 业务中断</span></p></div>
                 </article>
               </div>
 
               <div class="carousel-slide">
                 <article class="project-card">
-                  <h3>高并发标签命中校验 <span class="badge">5-10s → 1-2s（缓存命中时 < 1s）</span></h3>
-                  <div class="project-section"><h4>问题背景</h4><p>对外接口需校验请求数据是否命中多个标签，原串行查询数据库平均响应 10 秒左右，高并发下系统响应超时，频繁出现服务不可用。</p></div>
-                  <div class="project-section"><h4>解决思路</h4><ul>
-                    <li><strong>前置过滤</strong>：无效请求直接拦截，减少无效穿透</li>
-                    <li><strong>并行化</strong>：串行改并行，耗时从累加变为最大单次</li>
-                    <li><strong>Redis 缓存</strong>：缓存命中结果，降低数据库访问</li>
+                  <h3>千万级数据查询性能优化 <span class="badge">14s → 1s 左右</span></h3>
+                  <div class="project-section"><h4>背景</h4><p>千万级表因 UUID 主键、字符串时间、大量 NULL 值、触发器拖累、循环入库、多字段 OR 模糊匹配等问题，导致查询耗时 14 秒、连接池频繁耗尽，<strong>直接影响一线业务员查询效率</strong>。</p></div>
+                  <div class="project-section"><h4>核心优化措施</h4><ul>
+                    <li><strong>存储层改造</strong>：新增 BIGINT 字段（雪花算法生成）作为主键，消除 B+ 树页分裂；新增 DATETIME 字段替代字符串时间并建立索引；NULL 值改为默认值并设置 NOT NULL，提升索引选择性</li>
+                    <li><strong>写入解耦</strong>：循环单条 INSERT 改为批量插入；删除同步触发器，改为自研数据抽取平台异步推送至 FTP，解除入库阻塞</li>
+                    <li><strong>查询重构</strong>：界面改为下拉指定字段精确匹配，消除多字段 OR 模糊查询；列表查询不加载 TEXT/BLOB 大字段，详情页按需异步加载；按时间维度维护近 3 天 / 7 天 / 30 天三张冗余表，查询时根据时间范围路由至对应小表，扫描数据量减少 70%+</li>
+                  </ul></div>
+                  <div class="project-section"><h4>成果</h4><p>慢查询平均耗时从 14s 降至 1s 左右，<strong>一线业务员查询等待时间从「倒杯水」缩短到「眨眼间」</strong></p></div>
+                </article>
+              </div>
+
+              <div class="carousel-slide">
+                <article class="project-card">
+                  <h3>高并发标签命中校验 <span class="badge">10s → 1~2s</span></h3>
+                  <div class="project-section"><h4>背景</h4><p>对外接口需实时校验请求数据是否命中多个标签，原方案串行查询数据库，平均响应 10s，高并发下频繁超时、服务不可用，直接影响上游业务。</p></div>
+                  <div class="project-section"><h4>核心优化措施</h4><ul>
+                    <li><strong>服务拆分</strong>：将标签校验能力封装为独立微服务，通过 <strong>Nacos</strong> 实现多实例水平扩展</li>
+                    <li><strong>并行化改造</strong>：串行查库改为 CompletableFuture 并行执行，接口耗时从「累加」变为「取最大值」</li>
+                    <li><strong>Redis 缓存</strong>：缓存命中结果，降低数据库访问，设置随机 TTL 避免集中过期，相同 Key 查询加互斥锁防止缓存击穿，空结果缓存短时间防止穿透</li>
                     <li><strong>布隆过滤器</strong>：快速判断不存在的主键，避免缓存穿透</li>
                     <li><strong>异步解耦</strong>：线程池异步刷日志，接口内只生产和响应</li>
-                    <li><strong>限流熔断</strong>：限流熔断，保障系统不被冲垮</li>
+                    <li><strong>稳定性保障</strong>：通过 <strong>Sentinel</strong> 配置接口限流（QPS 限流）和熔断降级（异常比例熔断），保障系统不被冲垮</li>
                   </ul></div>
-                  <div class="project-section"><h4>优化效果</h4><p><span class="metric">5-10 s → 1-2s（缓存命中时 < 1s）</span></p></div>
+                  <div class="project-section"><h4>成果</h4><p>接口响应从 10s 降至 1~2s（缓存命中 &lt; 1s），高并发场景下<strong>连续 3 个月未出现服务不可用事故</strong></p></div>
                 </article>
               </div>
 
               <div class="carousel-slide">
                 <article class="project-card">
                   <h3>基于 Kafka 的上游数据接入可靠性改造 <span class="badge">丢数 → 零丢失</span></h3>
-                  <div class="project-section"><h4>问题背景</h4><p>上游系统通过 HTTP 接口推送预警数据，经常出现数据丢失（服务重启就没了）、责任扯皮（上下游都不认账），每个月要花大量时间排查，差不多 <strong>每月十几单工单</strong>。</p></div>
-                  <div class="project-section"><h4>解决思路</h4><ul>
-                    <li><strong>上游侧</strong>：改成写 Kafka，确保消息可靠写入；发送失败会写本地失败表，定时重试</li>
-                    <li><strong>Kafka 侧</strong>：用的公司标准集群，副本数保证数据不丢</li>
-                    <li><strong>下游侧</strong>：手动提交 offset，消费端做了幂等处理，消费失败会告警</li>
+                  <div class="project-section"><h4>背景</h4><p>上游系统通过 HTTP 接口推送预警数据，存在两大痛点：① 服务重启导致数据丢失；② 上下游责任边界模糊，故障排查困难，每月产生十余单人工排查工单。</p></div>
+                  <div class="project-section"><h4>核心优化措施</h4><ul>
+                    <li><strong>传输改造</strong>：上游由 HTTP 推送改为写入 Kafka，发送失败写本地失败表并定时重试，确保消息至少投递一次</li>
+                    <li><strong>下游侧</strong>：手动提交 offset，消费端实现幂等处理，消费失败即时告警通知</li>
                     <li><strong>责任边界</strong>：约定「Kafka 为界」，上游保证写入，下游保证消费，故障归属 5 分钟可判定</li>
                   </ul></div>
-                  <div class="project-section"><h4>优化效果</h4><ul>
-                    <li>上线后基本没再丢过数据</li>
-                    <li>人工排查工单从 <span class="metric">每月十几单 → 基本没有</span></li>
+                  <div class="project-section"><h4>成果</h4><ul>
+                    <li>数据丢失问题<strong>彻底解决</strong></li>
+                    <li>人工排查工单从每月十余单降至接近为零，<strong>跨团队协作效率根本性改善</strong></li>
                   </ul></div>
                 </article>
               </div>
 
               <div class="carousel-slide">
                 <article class="project-card">
-                  <h3>老系统智能化升级 → 问答助手</h3>
-                  <div class="project-section"><h4>问题背景</h4><p>老系统需新增智能能力，支持用户通过自然语言生成人物行为画像报告或查询表信息。</p></div>
-                  <div class="project-section"><h4>解决思路</h4><ul>
-                    <li>基于 <strong>Dify 工作流</strong>编排：LLM 意图识别 → Switch 分支路由 → 分别执行画像生成 / 查表查询 / 兜底回复</li>
-                    <li>将 Dify Web App 通过 <strong>iframe 嵌入</strong>老系统</li>
-                    <li>画像生成：查询老系统行为数据，通过 LLM 生成报告</li>
-                    <li>自助查询：通过 MCP 工具连接数据库，配置化白名单 + 参数化查询，敏感字段自动脱敏</li>
+                  <h3>老系统智能化升级：自然语言问答助手</h3>
+                  <div class="project-section"><h4>背景</h4><p>老系统需新增智能能力，支持用户通过自然语言生成人物行为画像报告或查询表信息。</p></div>
+                  <div class="project-section"><h4>核心优化措施</h4><ul>
+                    <li><strong>技术选型</strong>：基于 Dify 工作流编排（LLM 意图识别 → Switch 分支路由 → 画像生成 / 查表查询 / 兜底回复），Web App 通过 iframe 嵌入老系统，零代码侵入</li>
+                    <li><strong>画像生成链路</strong>：查询老系统行为数据，通过 LLM 生成报告</li>
+                    <li><strong>自助查询链路</strong>：通过 MCP 工具连接数据库，配置化白名单 + 参数化查询，敏感字段自动脱敏，杜绝 SQL 注入风险</li>
                   </ul></div>
-                  <div class="project-section"><h4>效果</h4><ul>
-                    <li>快速在老系统集成智能化功能</li>
-                    <li>Dify 工作流支持拖拽调整，业务人员可参与调优</li>
+                  <div class="project-section"><h4>成果</h4><ul>
+                    <li>以<strong>极低开发成本</strong>完成老系统智能化升级</li>
+                    <li>Dify 工作流支持拖拽调整，业务人员可直接参与 Prompt 调优，<strong>需求响应周期从周级别缩短至天级别</strong></li>
                   </ul></div>
                 </article>
               </div>
@@ -1391,26 +1405,35 @@
                   <li class="tree-leaf" tabindex="0">
                     <span class="leaf-title">设计模式</span>
                     <div class="leaf-tags">
-                      <span class="leaf-tag">工厂</span>
+                      <span class="leaf-tag">单例</span>
                       <span class="leaf-tag">策略</span>
                       <span class="leaf-tag">责任链</span>
                     </div>
-                    <div class="leaf-detail">熟悉工厂、策略、责任链等常用模式，并在项目中实践</div>
+                    <div class="leaf-detail">熟悉单例、策略、责任链等常用模式，并在项目中实践</div>
                   </li>
                 </ul>
               </div>
 
               <div class="tree-branch">
-                <div class="tree-node cat">框架生态</div>
+                <div class="tree-node cat">框架 & 运维</div>
                 <ul class="tree-leaves">
                   <li class="tree-leaf" tabindex="0">
                     <span class="leaf-title">Spring 生态</span>
                     <div class="leaf-tags">
                       <span class="leaf-tag">Boot</span>
-                      <span class="leaf-tag">IOC</span>
-                      <span class="leaf-tag">AOP</span>
+                      <span class="leaf-tag">Cloud Alibaba</span>
+                      <span class="leaf-tag">IOC / AOP</span>
                     </div>
-                    <div class="leaf-detail">熟练使用 Spring Boot / Spring MVC，理解 IOC、AOP 原理，能基于这些原理解决事务失效、日志记录等问题</div>
+                    <div class="leaf-detail">熟悉 IOC / AOP 原理与事务机制，熟练使用 Spring Boot / Spring MVC / Spring Cloud Alibaba，能独立解决事务失效、循环依赖、日志切面等底层问题</div>
+                  </li>
+                  <li class="tree-leaf" tabindex="0">
+                    <span class="leaf-title">DevOps</span>
+                    <div class="leaf-tags">
+                      <span class="leaf-tag">Jenkins</span>
+                      <span class="leaf-tag">CI/CD</span>
+                      <span class="leaf-tag">Docker Compose</span>
+                    </div>
+                    <div class="leaf-detail">熟悉基于 Jenkins 的 CI/CD 流水线（静态代码检查 → 打包 → 部署）；建立规范化发布机制后接入流水线，减少人工部署导致的回归；有 Docker Compose 编排微服务集群的实操经验</div>
                   </li>
                 </ul>
               </div>
@@ -1422,18 +1445,18 @@
                     <span class="leaf-title">数据库</span>
                     <div class="leaf-tags">
                       <span class="leaf-tag">MySQL</span>
-                      <span class="leaf-tag">InnoDB</span>
-                      <span class="leaf-tag">千万级</span>
+                      <span class="leaf-tag">PostgreSQL</span>
                     </div>
-                    <div class="leaf-detail">熟悉 MySQL / PostgreSQL，掌握 InnoDB 事务机制和索引原理，有千万级数据优化经验</div>
+                    <div class="leaf-detail">熟练掌握 MySQL InnoDB 事务机制、索引结构与锁机制，具备千万级数据表性能优化的完整实战经验（索引重建、批量写入、冗余表路由等）；熟练使用PostgreSQL</div>
                   </li>
                   <li class="tree-leaf" tabindex="0">
-                    <span class="leaf-title">缓存</span>
+                    <span class="leaf-title">缓存与分布式</span>
                     <div class="leaf-tags">
                       <span class="leaf-tag">Redis</span>
                       <span class="leaf-tag">布隆过滤器</span>
+                      <span class="leaf-tag">防雪崩</span>
                     </div>
-                    <div class="leaf-detail">熟练使用 Redis，能根据业务场景选择缓存模式（旁路、穿透、防雪崩），实践中用过布隆过滤器 + 缓存</div>
+                    <div class="leaf-detail">熟练掌握 Redis，能根据业务场景设计缓存架构（旁路缓存、防穿透、防雪崩），实战中结合布隆过滤器构建高可用缓存层</div>
                   </li>
                 </ul>
               </div>
@@ -1442,19 +1465,19 @@
                 <div class="tree-node cat">消息中间件</div>
                 <ul class="tree-leaves">
                   <li class="tree-leaf" tabindex="0">
-                    <span class="leaf-title">Kafka / RocketMQ</span>
+                    <span class="leaf-title">Kafka</span>
                     <div class="leaf-tags">
-                      <span class="leaf-tag">异步解耦</span>
-                      <span class="leaf-tag">削峰填谷</span>
+                      <span class="leaf-tag">可靠性</span>
                       <span class="leaf-tag">幂等</span>
+                      <span class="leaf-tag">告警监控</span>
                     </div>
-                    <div class="leaf-detail">Kafka / RocketMQ，用于异步解耦、削峰填谷；对消息丢失、重复消费、顺序消费有落地方案</div>
+                    <div class="leaf-detail">熟练掌握 Kafka，具备完整的消息可靠性保障方案（生产者重试 + 失败表、手动提交 offset、消费端幂等、告警监控），解决过数据丢失与责任界定问题</div>
                   </li>
                 </ul>
               </div>
 
               <div class="tree-branch">
-                <div class="tree-node cat">AI 应用</div>
+                <div class="tree-node cat">AI 工程化</div>
                 <ul class="tree-leaves">
                   <li class="tree-leaf" tabindex="0">
                     <span class="leaf-title">大模型落地</span>
@@ -1463,7 +1486,7 @@
                       <span class="leaf-tag">RAG</span>
                       <span class="leaf-tag">Xtuner</span>
                     </div>
-                    <div class="leaf-detail">基于 Dify 快速搭建问答助手，完成老系统零侵入集成；了解 RAG 原理及 Xtuner 微调</div>
+                    <div class="leaf-detail">了解 Dify 平台搭建 AI 应用的流程，通过 iframe 实现老系统零侵入集成；了解 RAG 检索增强生成原理及大模型微调（Xtuner）流程</div>
                   </li>
                 </ul>
               </div>
@@ -1479,7 +1502,7 @@
           <h2 class="section-title">自我评价</h2>
         </div>
         <div class="card">
-          <p class="about-text">8 年 Java 后端经验，擅长高并发性能优化与数据库调优，具备大模型应用开发能力（RAG / 微调 / Dify），首次将 Dify 工作流引入公司，实现老系统智能化升级。担任过技术负责人，带 5 人团队，热爱技术攻坚与代码交付，沟通高效，能落地、能沉淀。</p>
+          <p class="about-text">8 年 Java 后端经验，擅长高并发性能优化与数据库调优，具备大模型应用集成与落地经验（Dify），了解 RAG / 微调原理。首次将 Dify 工作流引入项目，实现老系统智能化升级。常态担任核心开发，阶段性承担项目技术牵头与团队协调（5 人研发团队），热爱技术攻坚与代码交付，沟通高效，能落地、能沉淀。</p>
         </div>
       </section>
 
